@@ -1,13 +1,12 @@
 #ifndef FT_PING_H
 # define FT_PING_H
 
-#include <dbg.h>
-#include <dbgmacros.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <netdb.h>
 #include <string.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <netinet/in.h>
 #include <netinet/ip_icmp.h>
@@ -32,10 +31,17 @@ typedef struct s_icmppkt
 	char			msg[MSG_LEN];
 }	t_icmppkt;
 
+typedef struct s_ippkt
+{
+	struct iphdr	ip;
+	t_icmppkt		icmp;
+}			t_ippkt;
+
 int		packet_exchange(t_socket socket);
-//int		resolve_dns(char *host, struct sockaddr *addr);
 void	init_icmphdr(t_icmppkt *pkt, int id);
+void	init_iphdr(struct iphdr *pkt);
 int		resolve_host(char *host, t_socket *sock);
+void dbg_dump_bytes(const void* data, size_t size);
 
 
 #endif

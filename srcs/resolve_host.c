@@ -34,7 +34,7 @@ int		resolve_host(char *host, t_socket *sock)
 	sock->addr.sin_family = AF_INET;
 	sock->addr.sin_port = 80;
 _sockend:
-	sock->fd = socket(AF_INET,  SOCK_RAW, IPPROTO_ICMP);
+	sock->fd = socket(AF_INET,  SOCK_RAW, IPPROTO_TCP);
 	if (sock->fd < 0)
 		return -1;
 	return 0;

@@ -55,7 +55,7 @@ OBJ		= ${addprefix ${OBJ_PATH}/, ${SRC_FILE:%.c=%.o}} \
 #===================#
 
 FLAGS = -Wall -Werror -Wextra -MMD -MP 
-DEBUG = -DDEBUG=1 -ldebug 
+DEBUG =
 SAN = -g3 -fsanitize=address
 OPT_FLAGS = -flto
 
