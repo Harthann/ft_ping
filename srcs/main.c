@@ -23,6 +23,14 @@ char	*get_host(char **av)
 	return (arg);
 }
 
+void	socket_options(int sock)
+{
+	int ttl = 104;
+    int ret = setsockopt(sock, IPPROTO_IP, IP_TTL, &ttl, sizeof(uint8_t));
+    if (ret != 0)
+        printf("Failed to setsockopt(): %s\n", strerror(errno));
+}
+
 // This is a comment
 int main(int ac, char **av)
 {
@@ -36,6 +44,7 @@ int main(int ac, char **av)
 		return help();
 	if (resolve_host(host, &sock) < 0)
 		RETERROR(2, host, "Name or service not known\n");
+	socket_options(sock.fd);
 	packet_exchange(sock);
 	return (0);
 }

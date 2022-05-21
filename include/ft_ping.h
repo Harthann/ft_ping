@@ -22,7 +22,7 @@ typedef struct s_socket {
 	struct sockaddr_in	addr;
 } t_socket;
 
-#define MSG_LEN 64 - sizeof(struct icmphdr)
+#define MSG_LEN 64 - sizeof(struct icmphdr)// - sizeof(struct timeval)
 
 typedef struct s_icmppkt
 {
@@ -31,16 +31,10 @@ typedef struct s_icmppkt
 	char			msg[MSG_LEN];
 }	t_icmppkt;
 
-typedef struct s_ippkt
-{
-	struct iphdr	ip;
-	t_icmppkt		icmp;
-}			t_ippkt;
-
 int		packet_exchange(t_socket socket);
 void	init_icmphdr(t_icmppkt *pkt, int id);
-void	init_iphdr(struct iphdr *pkt);
 int		resolve_host(char *host, t_socket *sock);
+uint16_t	compute_checksum(unsigned char *addr, size_t count);
 void dbg_dump_bytes(const void* data, size_t size);
 
 
