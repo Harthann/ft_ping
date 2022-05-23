@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <netinet/ip_icmp.h>
+#include <signal.h>
 
 #include <errno.h>
 
@@ -22,20 +23,34 @@ typedef struct s_socket {
 	struct sockaddr_in	addr;
 } t_socket;
 
-#define MSG_LEN 64 - sizeof(struct icmphdr)// - sizeof(struct timeval)
+#define MSG_LEN 64 - sizeof(struct icmphdr) - sizeof(struct timeval)
 
 typedef struct s_icmppkt
 {
 	struct icmphdr	hdr;
-//	struct timeval	timestamp;
+	struct timeval	timestamp;
 	char			msg[MSG_LEN];
 }	t_icmppkt;
 
-int		packet_exchange(t_socket socket);
-void	init_icmphdr(t_icmppkt *pkt, int id);
-int		resolve_host(char *host, t_socket *sock);
-uint16_t	compute_checksum(unsigned char *addr, size_t count);
-void dbg_dump_bytes(const void* data, size_t size);
+typedef struct s_fullpkt {
+	struct iphdr ip; 
+	t_icmppkt packet;
+}	__attribute__((packed)) t_fullpkt;
+
+typedef struct s_stat {
+	struct timeval	start;
+	int				id;
+	int				success;
+}			t_stat;
+
+
+
+int			packet_exchange(t_socket socket);
+void		init_icmphdr(t_icmppkt *pkt, int id);
+int			resolve_host(char *host, t_socket *sock);
+void		signal_handler(int signal);
+uint16_t	compute_checksum(uint16_t *addr, size_t count);
+void		dbg_dump_bytes(const void* data, size_t size);
 
 
 #endif

@@ -1,6 +1,6 @@
 #include "ft_ping.h"
 
-uint16_t	compute_checksum(unsigned char *addr, size_t count)
+uint16_t	compute_checksum(uint16_t *addr, size_t count)
 {
 	/*
 	 * Compute Internet Checksum for "count" bytes
@@ -28,8 +28,8 @@ void	init_icmphdr(t_icmppkt *pkt, int id)
 	pkt->hdr.un.echo.id = 42;
 	pkt->hdr.un.echo.sequence = id;
 	pkt->hdr.checksum = 0;
-	//gettimeofday(&pkt->timestamp, NULL);
-	memset(pkt->msg, 0, MSG_LEN);
-	pkt->hdr.checksum = compute_checksum((unsigned char*)pkt, sizeof(t_icmppkt));
+	gettimeofday(&pkt->timestamp, NULL);
+	memset(pkt->msg, 42, MSG_LEN);
+	pkt->hdr.checksum = compute_checksum((uint16_t*)pkt, sizeof(t_icmppkt));
 }
 

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <ft_ping.h>
 
+t_stat g_stats;
+
 int help(void)
 {
 	printf("Usage:\nft_ping [options] destination\n\n");
@@ -31,6 +33,13 @@ void	socket_options(int sock)
         printf("Failed to setsockopt(): %s\n", strerror(errno));
 }
 
+void init_stats()
+{
+	g_stats.id = 1;
+	g_stats.success = 0;
+	gettimeofday(&g_stats.start, NULL);
+}
+
 // This is a comment
 int main(int ac, char **av)
 {
@@ -45,6 +54,7 @@ int main(int ac, char **av)
 	if (resolve_host(host, &sock) < 0)
 		RETERROR(2, host, "Name or service not known\n");
 	socket_options(sock.fd);
+	signal(SIGINT, signal_handler);
 	packet_exchange(sock);
 	return (0);
 }
