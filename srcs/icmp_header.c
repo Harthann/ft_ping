@@ -28,7 +28,8 @@ void	init_icmphdr(t_icmppkt *pkt, int id)
 	pkt->hdr.un.echo.id = 42;
 	pkt->hdr.un.echo.sequence = id;
 	pkt->hdr.checksum = 0;
-	gettimeofday(&pkt->timestamp, NULL);
+	if (gettimeofday(&pkt->timestamp, NULL) < 0)
+		fprintf(stderr, "Error getting time of day\n");
 	memset(pkt->msg, 42, MSG_LEN);
 	pkt->hdr.checksum = compute_checksum((uint16_t*)pkt, sizeof(t_icmppkt));
 }

@@ -32,25 +32,19 @@
 
 #define MSG_LEN 64 - sizeof(struct icmphdr) - sizeof(struct timeval)
 
-#define DEBUG 1
-
-#if defined(DEBUG)
-	#define DPRINT(fmt, args...) fprintf(stderr, "DEBUG: %s:%d:%s(): " fmt, \
-		__FILE__, __LINE__, __func__, ##args)
-#else
-	#define DPRINT(fmt, args...)
-#endif
-
-
 /*==============*/
 /*	STRUCTURES	*/
 /*==============*/
+
+typedef struct s_flags {
+	int		verbose;
+	int		ttl;
+}	t_flags;
 
 typedef struct s_socket {
 	int					fd;
 	struct sockaddr_in	addr;
 } t_socket;
-
 
 typedef struct s_icmppkt
 {
@@ -69,9 +63,12 @@ typedef struct s_stat {
 	char			*target;
 	int				sended;
 	int				success;
+	int				errors;
 	float			min;
 	float			max;
 	float			sum;
+	float			tsum;
+	float			tsum2;
 	t_socket		sock;
 }			t_stat;
 
@@ -80,6 +77,7 @@ typedef struct s_stat {
 /*==========*/
 
 extern t_stat	g_stats;
+extern t_flags	g_flags;
 extern int		g_ttl;
 
 /*==============*/
@@ -100,6 +98,9 @@ int			ft_atoi(const char *str);
 void		init_stats(char *target);
 int			help(void);
 int			is_num(const char* str);
+void		update_stats_time(float timer);
+void		ft_memset(void *addr, const char value, size_t size);
+float		ft_sqrt(float nb, float x);
 
 /*		SIGNALS		*/
 void		sigint_handler(int signal);

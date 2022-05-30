@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <ft_ping.h>
 
-t_stat	g_stats;
-int		g_ttl = 64;
+t_stat		g_stats;
+t_flags		g_flags = {
+	.ttl = 64,
+	.verbose = 0
+};
 
 int		parser(int ac, char **av, char **host)
 {
@@ -13,6 +16,7 @@ int		parser(int ac, char **av, char **host)
 		switch (c)
 		{
 			case 'v' :
+				g_flags.verbose = 1;
 				break;;
 			case 't' :
 				if (ft_optarg == NULL || !is_num(ft_optarg))
@@ -20,7 +24,7 @@ int		parser(int ac, char **av, char **host)
 					help();
 					return -1;
 				}
-				g_ttl = ft_atoi(ft_optarg);
+				g_flags.ttl = ft_atoi(ft_optarg);
 				break;;
 			case 'h':
 				help();
@@ -47,9 +51,10 @@ int main(int ac, char **av)
 	if (resolve_host(host, &sock) < 0)
 		RETERROR(2, host, "Name or service not known\n");
 	init_stats(host);
-	if (setsockopt(sock.fd, IPPROTO_IP, IP_TTL, &g_ttl, sizeof(uint8_t)))
-        fprintf(stderr, "Failed to setsockopt(): %s\n", strerror(errno));
-
+	if (setsockopt(sock.fd, IPPROTO_IP, IP_TTL, &g_flags.ttl, sizeof(uint8_t)))
+		fprintf(stderr, "Failed to setsockopt(): %s\n", strerror(errno));
+	if (setsockopt(sock.fd, IPPROTO_IP, IP_TTL, &g_flags.ttl, sizeof(uint8_t)))
+		fprintf(stderr, "Failed to setsockopt(): %s\n", strerror(errno));
 	/*	Adding signal handling for statistics print	*/
 	signal(SIGINT, sigint_handler);
 	signal(SIGKILL, sigint_handler);
