@@ -78,7 +78,6 @@ typedef struct s_stat {
 
 extern t_stat	g_stats;
 extern t_flags	g_flags;
-extern int		g_ttl;
 
 /*==============*/
 /*	PROTOTYPE	*/
